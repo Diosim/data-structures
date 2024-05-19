@@ -1,11 +1,11 @@
 // #####################################################################################################
 // #####################################################################################################
-//  _____       _______          _____ _______ _____  _    _  _____ _______ _    _ _____  ______  _____ 
+//  _____       _______          _____ _______ _____  _    _  _____ _______ _    _ _____  ______  _____
 // |  __ \   /\|__   __|/\      / ____|__   __|  __ \| |  | |/ ____|__   __| |  | |  __ \|  ____|/ ____|
-// | |  | | /  \  | |  /  \    | (___    | |  | |__) | |  | | |       | |  | |  | | |__) | |__  | (___  
-// | |  | |/ /\ \ | | / /\ \    \___ \   | |  |  _  /| |  | | |       | |  | |  | |  _  /|  __|  \___ \ 
+// | |  | | /  \  | |  /  \    | (___    | |  | |__) | |  | | |       | |  | |  | | |__) | |__  | (___
+// | |  | |/ /\ \ | | / /\ \    \___ \   | |  |  _  /| |  | | |       | |  | |  | |  _  /|  __|  \___ \
 // | |__| / ____ \| |/ ____ \   ____) |  | |  | | \ \| |__| | |____   | |  | |__| | | \ \| |____ ____) |
-// |_____/_/    \_\_/_/    \_\ |_____/   |_|  |_|  \_\\____/ \_____|  |_|   \____/|_|  \_\______|_____/ 
+// |_____/_/    \_\_/_/    \_\ |_____/   |_|  |_|  \_\\____/ \_____|  |_|   \____/|_|  \_\______|_____/
 // #####################################################################################################
 // Data Structures assignment
 // University of Pireaus
@@ -16,7 +16,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 
 // Function to clear the screen
 // ok on linux/online compilers
@@ -36,7 +35,6 @@ void clearInputBuffer() {
     while (getchar() != '\n'); // Clear input buffer
     getchar(); // Wait for Enter key
 }
-
 
 // ####################################################################################
 // ############################## EXERCISE 1 START ####################################
@@ -113,6 +111,7 @@ void matrix_operations() {
 // to do:
 // - Test changing scanf() with fgets(), to properly handle spaces in user input
 // - Find out how to input space " " characters (i.e. name, address)
+// - Fix code for VScode erros with buffer overflow on addCourse addStudent
 
 struct studentCourseLink {
     struct student *student;
@@ -138,19 +137,18 @@ struct student {
     struct course *enrolledCourse; // Directly link to the single course
 };
 
-
 struct student *head;
 struct course* courseHead = NULL;
 
 // ############################## COURSE MANAGEMENT - START ################################
-struct course* createCourse(char courseName[30]) {
+struct course* createCourse(const char *courseName) {
     struct course* newCourse = (struct course*) malloc(sizeof(struct course));
     strcpy(newCourse->courseName, courseName);
     newCourse->next = NULL;
     newCourse->studentsHead = NULL; // Initialize the list of students enrolled in the course
     return newCourse;
 }
-struct course* findOrCreateCourse(char courseName[30]) {
+struct course* findOrCreateCourse(const char *courseName) {
     struct course* currentCourse = courseHead; // Assume courseHead is a global pointer to the first course
     struct course* lastCourse = NULL;
     while (currentCourse != NULL) {
@@ -171,14 +169,14 @@ struct course* findOrCreateCourse(char courseName[30]) {
     return newCourse;
 }
 
-void addCourse(struct student* student, char courseName[30]) {
+void addCourse(struct student* student, const char *courseName) {
     struct course* course = findOrCreateCourse(courseName);
     student->enrolledCourse = course; // Directly link student to this course
 }
 // ############################## COURSE MANAGEMENT - END ################################
 
 // ############################# STUDENT MANAGEMENT - START ###############################
-void AddStudent(int am, char firstName[30], char lastName[30], char patronym[30], char matronym[30], char address[30], int phoneNumber, int mobileNumber, char courseName[30]) {
+void addStudent(int am, const char *firstName, const char *lastName, const char *patronym, const char *matronym, const char *address, int phoneNumber, int mobileNumber, const char *courseName) {
     struct student *pts;
     pts = (struct student*) malloc(sizeof(struct student));
     if (pts == NULL) {
@@ -257,7 +255,7 @@ void displayStudentsByCourse() {
     clearInputBuffer();
 }
 
-void handleAddStudent() {
+void handleaddStudent() {
     clearScreen();
     int am, phoneNumber, mobileNumber;
     char firstName[30], lastName[30], patronym[30], matronym[30], address[30], courseName[30];
@@ -281,19 +279,19 @@ void handleAddStudent() {
     scanf("%d", &mobileNumber);
     printf("Enter course name: ");
     scanf("%s", courseName);
-    AddStudent(am, firstName, lastName, patronym, matronym, address, phoneNumber, mobileNumber, courseName);
+    addStudent(am, firstName, lastName, patronym, matronym, address, phoneNumber, mobileNumber, courseName);
 }
 
 void studentExamplePreloader() {
     // Import sample students for exercise 3 - START
-    AddStudent(1, "Diogenis", "Papadopoulos", "Marios", "Maria", "Aristotelous25", 21012344, 69696969, "data");
-    AddStudent(2, "Ioannis", "Efstratiou", "Kostas", "Kaiti", "panormou1", 24101223, 69696969, "math");
-    AddStudent(3, "Orestis", "Giannou", "Marios", "Maria", "epaminonda", 21012344, 69696969, "data");
-    AddStudent(4, "Nopi", "Afroxilanthou", "Takis", "Efterpi", "kekropos2", 241012323, 69696969, "math");
-    AddStudent(5, "Ian", "Afroxilanthou", "Sakis", "Jane", "anaximandrou5", 241012323, 69696969, "physics");
-    AddStudent(6, "Sandra", "Panagiotou", "Lakis", "Mary", "kekropos2", 241012323, 69696969, "network");
-    AddStudent(7, "Ifigenia", "Yates", "John", "Emily", "kekropos2", 241012323, 69696969, "network");
-    AddStudent(8, "Stavros", "Yates", "Jack", "Emily", "kekropos2", 241012323, 69696969, "network");
+    addStudent(1, "Diogenis", "Papadopoulos", "Marios", "Maria", "Aristotelous25", 21012344, 69696969, "data");
+    addStudent(2, "Ioannis", "Efstratiou", "Kostas", "Kaiti", "panormou1", 24101223, 69696969, "math");
+    addStudent(3, "Orestis", "Giannou", "Marios", "Maria", "epaminonda", 21012344, 69696969, "data");
+    addStudent(4, "Nopi", "Afroxilanthou", "Takis", "Efterpi", "kekropos2", 241012323, 69696969, "math");
+    addStudent(5, "Ian", "Afroxilanthou", "Sakis", "Jane", "anaximandrou5", 241012323, 69696969, "physics");
+    addStudent(6, "Sandra", "Panagiotou", "Lakis", "Mary", "kekropos2", 241012323, 69696969, "network");
+    addStudent(7, "Ifigenia", "Yates", "John", "Emily", "kekropos2", 241012323, 69696969, "network");
+    addStudent(8, "Stavros", "Yates", "Jack", "Emily", "kekropos2", 241012323, 69696969, "network");
     printf("Student directory sample is loaded.\n");
     clearInputBuffer();
     // Import sample students for exercise 3 - END
@@ -335,7 +333,7 @@ void performLIFOStackOperations() {
     int stack[MAX];
     int top = -1;
     int num;
-    
+
     printf("Enter numbers to push onto the stack (enter -1 to stop):\n");
 
     do {
@@ -419,11 +417,97 @@ void performLIFOlinkedStackOperations() {
 // ####################################################################################
 // ############################## EXERCISE 6 START ####################################
 // ############************************************************************############
+// Function to evaluate the expression [(10+2) x (8-3)] + 2
 
+typedef struct {
+    int *data;
+    int top;
+    int capacity;
+} Stack;
+
+// Stack initialization
+Stack* createStack(int capacity) {
+    Stack *stack = (Stack *)malloc(sizeof(Stack));
+    if (stack == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    stack->capacity = capacity;
+    stack->top = -1;
+    stack->data = (int *)malloc(capacity * sizeof(int));
+    if (stack->data == NULL) {
+        printf("Memory allocation failed\n");
+        free(stack);
+        exit(1);
+    }
+    return stack;
+}
+
+// Function to push an element onto the stack
+void pushStack(Stack *stack, int value) {
+    if (stack->top == stack->capacity - 1) {
+        printf("Stack overflow\n");
+        return;
+    }
+    stack->data[++stack->top] = value;
+    printf("Pushed %d, Stack: ", value);
+    for (int i = 0; i <= stack->top; i++) {
+        printf("%d ", stack->data[i]);
+    }
+    printf("\n");
+}
+
+// Function to pop an element from the stack
+int popStack(Stack *stack) {
+    if (stack->top == -1) {
+        printf("Stack underflow\n");
+        return -1;
+    }
+    int value = stack->data[stack->top--];
+    printf("Popped %d, Stack: ", value);
+    for (int i = 0; i <= stack->top; i++) {
+        printf("%d ", stack->data[i]);
+    }
+    printf("\n");
+    return value;
+}
+
+void evaluateExpression() {
+    Stack *stack = createStack(10);
+
+    pushStack(stack, 10);
+    pushStack(stack, 2);
+    int val2 = popStack(stack);
+    int val1 = popStack(stack);
+    int result1 = val1 + val2;
+    pushStack(stack, result1);
+
+    pushStack(stack, 8);
+    pushStack(stack, 3);
+    val2 = popStack(stack);
+    val1 = popStack(stack);
+    int result2 = val1 - val2;
+    pushStack(stack, result2);
+
+    val2 = popStack(stack);
+    val1 = popStack(stack);
+    int result3 = val1 * val2;
+    pushStack(stack, result3);
+
+    pushStack(stack, 2);
+    val2 = popStack(stack);
+    val1 = popStack(stack);
+    int finalResult = val1 + val2;
+    pushStack(stack, finalResult);
+
+    // Print final result
+    printf("Final result: %d\n", popStack(stack));
+}
 
 // ############************************************************************############
 // ############################### EXERCISE 6 END #####################################
 // ####################################################################################
+
 
 
 // ####################################################################################
@@ -436,7 +520,6 @@ void menuHeader(int exercise){
     } else if (exercise == 2) {
         printf("Exercise 2 dummy placeholder\n");
     } else if (exercise == 3) {
-        //printf("UNIPI - Data Structures  23-24\n");
         printf("Student directory management options:\n");
         printf("1. Add Student\n");
         printf("2. Display All Students\n");
@@ -459,14 +542,12 @@ void handleMenuChoice(int choice) {
         case 1:
             clearScreen();
             menuHeader(1);
-            //printf("Exercise 1 dummy placeholder \n");
             matrix_operations();
             clearInputBuffer();
             break;
         case 2:
             clearScreen();
             menuHeader(2);
-            //printf("Exercise 2 dummy placeholder\n");
             clearInputBuffer();
             break;
         case 3:
@@ -474,18 +555,10 @@ void handleMenuChoice(int choice) {
                 int subChoice;
                 clearScreen();
                 menuHeader(3);
-                //printf("UNIPI - Data Structures  23-24\n");
-                //printf("Student directory management options:\n");
-                //printf("1. Add Student\n");
-                //printf("2. Display All Students\n");
-                //printf("3. Display Students by Course\n");
-                //printf("4. Preload sample student data\n");
-                //printf("5. Back to Main Menu\n");
-                //printf("Enter your choice: ");
                 scanf("%d", &subChoice);
                 switch (subChoice) {
                     case 1:
-                        handleAddStudent();
+                        handleaddStudent();
                         break;
                     case 2:
                         displayAllStudents();
@@ -505,23 +578,20 @@ void handleMenuChoice(int choice) {
         case 4:
             clearScreen();
             menuHeader(4);
-            //printf("UNIPI - Data Structures  23-24\n");
-            //printf("Exercise 4 LIFO stack \n");
             performLIFOStackOperations();
             clearInputBuffer();
             break;
         case 5:
             clearScreen();
             menuHeader(5);
-            //printf("UNIPI - Data Structures  23-24\n");
-            //printf("Exercise 5 LIFO linked list stack \n");
+
             performLIFOlinkedStackOperations();
             clearInputBuffer();
             break;
         case 6:
             clearScreen();
             menuHeader(6);
-            //printf("Exercise 6 dummy placeholder \n");
+            evaluateExpression();
             clearInputBuffer();
             break;
         case 7:
@@ -543,7 +613,7 @@ int getMenuChoice() {
     printf("3. Exercise 3 - Student Directory\n");
     printf("4. Exercise 4 - LIFO stack (simple)\n");
     printf("5. Exercise 5 - LIFO stack (linked lists)\n");
-    printf("6. Exercise 6 - ------------------\n");
+    printf("6. Exercise 6 - Expression evaluation\n");
     printf("7. Exit\n");
     printf("Enter your choice: ");
     scanf("%d", &choice);
