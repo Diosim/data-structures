@@ -1,8 +1,6 @@
 # Data Structures Assignment Repository
 
-![University of Piraeus](https://upload.wikimedia.org/wikipedia/en/7/7e/UNIPI.jpg)
-
-Welcome to the Data Structures assignment repository for the University of Piraeus, April 2024. This repository contains C code implementing various exercises related to data structures. Below is a brief overview of the exercises covered in this repository along with a guide on how to navigate through the code.
+This repository contains C code implementing various exercises related to data structures. Below is a brief overview of the exercises covered in this repository along with a guide on how to navigate through the code.
 
 ## Exercise Directory
 
